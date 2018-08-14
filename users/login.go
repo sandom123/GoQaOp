@@ -9,13 +9,11 @@ import (
 	_"crypto/md5"
 	"github.com/sandom123/GoQaOp/models"
 	"github.com/sandom123/GoQaOp/util"
-	"time"
+	_"time"
 )
 
 func Login(w http.ResponseWriter, r *http.Request)  {
 	fmt.Println("登录")
-	cookie, _ := r.Cookie("username")
-	fmt.Fprint(w, cookie)
 	r.ParseForm() //解析url传递的参数，对于post则解析响应包的主体
 	if r.Method == "GET"{
 		t, err := template.ParseFiles("views/login.html")
@@ -33,12 +31,10 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 			log.Fatal("登录提示:",err)
 		}
 		fmt.Println("登录成功")
-		expiration := time.Now()
-		expiration = expiration.AddDate(1, 0, 0)//有效期1年
-		cookie := http.Cookie{Name: "username", Value: username, Expires: expiration}
+		cookie := http.Cookie{Name: "username", Value: string(username), Path: "/", MaxAge: 86400}
 		http.SetCookie(w, &cookie)
-		cookie1 := http.Cookie{Name: "uid", Value: id, Expires: expiration}
-		http.SetCookie(w, &cookie1)
+		cookie2 := http.Cookie{Name: "uid", Value: string(id), Path: "/", MaxAge: 86400}
+		http.SetCookie(w, &cookie2)
 
 		http.Redirect(w, r, "/", http.StatusFound)
 	}
@@ -58,7 +54,8 @@ func checkLogin(username, password , token string) (string, error) {
 		return "",errors.New("用户信息查询错误")
 	}
 	pas:= userInfo["password"]
-	if fmt.Sprintf("%s%s", util.Md5hash(username), models.UserpassSalt) != pas{
+	repas := fmt.Sprintf("%s%s", util.Md5hash(username), models.UserpassSalt)
+	if  repas!= pas{
 		return "",errors.New("用户名或者密码输入错误")
 	}
 	id:= string(userInfo["id"])
