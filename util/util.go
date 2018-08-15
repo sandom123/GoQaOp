@@ -6,6 +6,8 @@ import (
 	"net"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"net/http"
 )
 
 //公共方法
@@ -45,4 +47,25 @@ func Md5hash(s string)  string{
 	str :=hex.EncodeToString(cipherStr)
 
 	return str
+}
+
+type JsonOut struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Data    string `json:"data"`
+}
+
+//json输出
+func JsonOutPut(w http.ResponseWriter, data string, code int, message string) {
+	var d JsonOut
+	d.Code = code
+	d.Message = message
+	d.Data = data
+	result, err := json.Marshal(data)
+	if err != nil {
+		w.Write([]byte(""))
+	}
+	os.Stdout.Write(result)
+	w.Write(result)
+	return
 }

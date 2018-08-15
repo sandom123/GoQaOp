@@ -10,6 +10,10 @@ import (
 	"github.com/sandom123/GoQaOp/question"
 )
 
+type Data struct {
+	Action string
+}
+
 //后台首页
 func Home(w http.ResponseWriter, r *http.Request){
 	fmt.Println("首页")
@@ -26,8 +30,8 @@ func Home(w http.ResponseWriter, r *http.Request){
 	if err != nil{
 		log.Fatal("parse file:", err)
 	}
-
-	t.Execute(w, nil)
+	d :=Data{Action:"home"}
+	t.Execute(w, d)
 }
 
 //程序入口文件
