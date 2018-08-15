@@ -45,13 +45,13 @@
                     type: 'POST',
                     url:'/login/',
                     dataType: 'json',
-                    data: JSON.stringify(data.field),
+                    data: data.field,
                     success: function (result) {
                         if(result.code == 200){
                             layer.msg("登录成功");
                             window.location.href = "/";
                         }else{
-                            layer.msg("登录失败");
+                            layer.msg(result.message);
                         }
                     },
                     error: function () {

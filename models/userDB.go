@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"log"
+	_"log"
 )
 var tableConfig = make(map[string]string)
 var (
@@ -19,7 +19,6 @@ func GetInfoByName(name string) (UserInfo, error){
 	var id,username, password string
 	err := db.QueryRow(sql).Scan(&id, &username, &password)
 	if err != nil{
-		log.Fatal(err)
 		return UserInfo{},err
 	}
 

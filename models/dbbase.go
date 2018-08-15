@@ -22,7 +22,7 @@ type Dbbase struct{
 func Connect() *sql.DB{
 	ip :=util.GetIntranetIp()
 	d := Dbbase{}
-	if ip == "192.168.0.106"{//家里的ip
+	if ip == "192.168.0.103"{//家里的ip
 		d = Dbbase{
 			"127.0.0.1","root", "123456", 3306, "GoQaOp", "utf8",
 		}

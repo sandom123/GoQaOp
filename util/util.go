@@ -61,10 +61,7 @@ func JsonOutPut(w http.ResponseWriter, data string, code int, message string) {
 	d.Code = code
 	d.Message = message
 	d.Data = data
-	result, err := json.Marshal(data)
-	if err != nil {
-		w.Write([]byte(""))
-	}
+	result, _ := json.Marshal(d)
 	os.Stdout.Write(result)
 	w.Write(result)
 	return

@@ -10,7 +10,6 @@ import (
 	"github.com/sandom123/GoQaOp/models"
 	"github.com/sandom123/GoQaOp/util"
 	_"time"
-	"io/ioutil"
 )
 
 type Data struct {
@@ -39,24 +38,14 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 		d :=Data{Action:"login"}
 		t.Execute(w, d)
 	}else{
-		result, _:= ioutil.ReadAll(r.Body)
-		r.Body.Close()
-		fmt.Printf("%s\n", result)
-		////接收表单数据，并进行处理
-		//defer r.Body.Close()
-		//con, _ := ioutil.ReadAll(r.Body) //获取post的数据
-		//fmt.Println(string(con))
 		username := r.Form.Get("username")
-		//fmt.Println("8888")
 		password := r.Form.Get("password")
-		//
 		token := r.Form.Get("token")
 		id, err := checkLogin(username, password, token)
-		//
 		if(err != nil){
-
+			util.JsonOutPut(w,"0", 201, err.Error())
+			return
 		}
-		fmt.Println("登录成功")
 		cookie := http.Cookie{Name: "username", Value: string(username), Path: "/", MaxAge: 86400}
 		http.SetCookie(w, &cookie)
 		cookie2 := http.Cookie{Name: "uid", Value: string(id), Path: "/", MaxAge: 86400}
@@ -81,7 +70,7 @@ func checkLogin(username, password , token string) (string, error) {
 		return "",errors.New("用户信息查询错误")
 	}
 	pas:= userInfo["password"]
-	repas := fmt.Sprintf("%s%s", util.Md5hash(username), models.UserpassSalt)
+	repas := fmt.Sprintf("%s%s", util.Md5hash(password), models.UserpassSalt)
 	if  repas!= pas{
 		return "",errors.New("用户名或者密码输入错误")
 	}
