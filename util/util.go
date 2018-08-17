@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"reflect"
+	"fmt"
 )
 
 //公共方法
@@ -98,4 +100,17 @@ func GetLoginUid(w http.ResponseWriter, r *http.Request) (int, string){
 	}
 
 	return uid, uusername
+}
+
+//struct 转化为map
+func Struct2Map(obj interface{}) map[string]interface{} {
+	t := reflect.TypeOf(obj)
+	v := reflect.ValueOf(obj)
+	fmt.Println(t)
+
+	var data = make(map[string]interface{})
+	for i := 0; i < t.NumField(); i++ {
+		data[t.Field(i).Name] = v.Field(i).Interface()
+	}
+	return data
 }

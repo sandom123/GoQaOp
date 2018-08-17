@@ -25,6 +25,21 @@ func CategoryAdd(name string, pid, sort, status string) int{
 	return int(id)
 }
 
+//获取分类列表
+func GetCategoryList(where string) map[int]map[string]string{
+	db := Connect()
+	sql := ""
+	if where != ""{
+		sql = fmt.Sprintf("Select id,name,pid,sort,status FROM %s WHERE %s", "qa_category", where)
+	}else{
+		sql = fmt.Sprintf("Select id,name,pid,sort,status FROM %s ", "qa_category")
+	}
+	list, err := GetList(db, sql)
+	if err != nil{
+		return map[int]map[string]string{}
+	}
+	return list
+}
 //修改分类
 func CategoryEdit(id int, name string, pid, sort, status string) int{
 	db := Connect()

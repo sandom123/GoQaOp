@@ -66,7 +66,7 @@ func main() {
 
 	http.HandleFunc("/qalist/", question.QaList)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static")))) // 启动静态文件服务
-	err := http.ListenAndServe(":9090", nil) //设置监听的端口
+	err := http.ListenAndServe(":9091", nil) //设置监听的端口
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}

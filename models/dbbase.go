@@ -42,40 +42,41 @@ func Connect() *sql.DB{
 
 	return db
 }
-
+type CateCloum struct{
+	id int
+	name string
+	pid,sort,status int
+}
 // 获取表数据
-func Get(db *sql.DB, s string)([]string, error){
+func GetList(db *sql.DB, s string) (map[int]map[string]string, error){
+
+	result := make(map[int]map[string]string)
 	rows, err := db.Query(s)
 	if err != nil {
-		return nil,err
+		return map[int]map[string]string{}, err
 	}
 	defer rows.Close()
 	cols, err := rows.Columns()
 	if err != nil {
-		fmt.Println("Failed to get columns", err)
+		return map[int]map[string]string{}, err
 	}
-	// Result is your slice string.
 	rawResult := make([][]byte, len(cols))
-	result := make([]string, len(cols))
-
 	dest := make([]interface{}, len(cols)) // A temporary interface{} slice
 	for i, _ := range rawResult {
 		dest[i] = &rawResult[i] // Put pointers to each string in the interface slice
 	}
-
+	ii := 0
 	for rows.Next() {
-		err = rows.Scan(dest...)
-		if err != nil {
-			fmt.Println("Failed to scan row", err)
+		err := rows.Scan(dest...)
+		if err != nil{
+			log.Fatal("Scan error:", err)
 		}
-		for i, raw := range rawResult {
-			if raw == nil {
-				result[i] = ""
-			} else {
-				result[i] = string(raw)
-			}
+		cls := make(map[string]string)
+		 for i, raw := range rawResult {
+			cls[cols[i]] = string(raw)
 		}
-
+		result[ii] = cls
+		 ii ++
 	}
 
 	return result,nil
