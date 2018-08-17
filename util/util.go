@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 //公共方法
@@ -65,4 +66,36 @@ func JsonOutPut(w http.ResponseWriter, data string, code int, message string) {
 	os.Stdout.Write(result)
 	w.Write(result)
 	return
+}
+
+//检测登录,获取登录的用户ID
+func GetLoginUid(w http.ResponseWriter, r *http.Request) (int, string){
+	//// read cookie
+	cookie, err := r.Cookie("uid")
+	if err != nil {
+		http.Redirect(w, r, "/login/", http.StatusFound)
+		return 0, ""
+	}
+	cuid := cookie.Value
+	if cuid == ""{ //未登录
+		http.Redirect(w, r, "/login/", http.StatusFound)
+		return 0, ""
+	}
+	uid, err := strconv.Atoi(cuid)
+	if err != nil {
+		http.Redirect(w, r, "/login/", http.StatusFound)
+		return 0, ""
+	}
+	ucookie, err := r.Cookie("username")
+	if err != nil {
+		http.Redirect(w, r, "/login/", http.StatusFound)
+		return 0, ""
+	}
+	uusername := ucookie.Value
+	if uusername == ""{ //未登录
+		http.Redirect(w, r, "/login/", http.StatusFound)
+		return 0, ""
+	}
+
+	return uid, uusername
 }
